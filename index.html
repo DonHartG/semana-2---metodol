@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformación Pedagógica en InnovEduca</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .presentation-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.6s ease-in-out;
+            background: white;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+
+        .slide h1 {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .slide h2 {
+            font-size: 2.2em;
+            color: #764ba2;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .slide h3 {
+            font-size: 1.5em;
+            color: #667eea;
+            margin: 20px 0 15px 0;
+        }
+
+        .slide p {
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #333;
+            max-width: 900px;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+
+        .slide ul {
+            list-style: none;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .slide li {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #333;
+            padding: 15px 20px;
+            margin: 10px 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-left: 5px solid #667eea;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .slide li:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .slide li strong {
+            color: #764ba2;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(255,255,255,0.3);
+            z-index: 1000;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            color: #667eea;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-top: 4px solid #667eea;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card h4 {
+            color: #764ba2;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 900px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .highlight-box h3 {
+            color: white;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .highlight-box p {
+            color: white;
+            font-size: 1.1em;
+        }
+
+        .stat-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+            max-width: 1000px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            min-width: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            color: #666;
+        }
+
+        .timeline {
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            padding: 20px 30px;
+            background: white;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #764ba2;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .timeline-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+            }
+
+            .slide h1 {
+                font-size: 2em;
+            }
+
+            .slide h2 {
+                font-size: 1.5em;
+            }
+
+            .slide p, .slide li {
+                font-size: 1em;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="slide-counter" id="slideCounter">1 / 10</div>
+
+    <div class="presentation-container">
+        <!-- Slide 1: Portada -->
+        <div class="slide active">
+            <h1>🎓 Transformación Pedagógica en InnovEduca</h1>
+            <div class="highlight-box">
+                <h3>Análisis del Caso y Propuesta de Mejora</h3>
+                <p>Implementación del Aprendizaje Basado en Casos (ABC) en un entorno 100% en línea</p>
+            </div>
+            <p style="margin-top: 40px; font-size: 1.3em; color: #666;">
+                Maestría en Educación | Metodologías para la Enseñanza
+            </p>
+            <p style="font-size: 1.1em; color: #999; margin-top: 20px;">
+                Oscar Fabián Gómez Sánchez | Noviembre 2026
+            </p>
+        </div>
+
+        <!-- Slide 2: Introducción -->
+        <div class="slide">
+            <h2>📋 Contexto del Caso</h2>
+            <p>
+                La Universidad <strong>InnovEduca</strong> adoptó el <strong>Aprendizaje Basado en Casos (ABC)</strong> para activar el pensamiento crítico y la toma de decisiones de sus estudiantes de posgrado en un entorno completamente en línea.
+            </p>
+            <div class="highlight-box">
+                <h3>¿Por qué ABC?</h3>
+                <p>El método del caso obliga a analizar situaciones reales, defender decisiones y aprender con otros, desarrollando competencias esenciales para el mundo profesional.</p>
+            </div>
+            <p style="margin-top: 30px; font-size: 1.2em; color: #764ba2; font-weight: bold;">
+                Sin embargo, tras seis meses de implementación, los datos revelan que la innovación se quedó en el discurso...
+            </p>
+        </div>
+
+        <!-- Slide 3: Estadísticas del Problema -->
+        <div class="slide">
+            <h2>📊 Diagnóstico: La Realidad tras 6 Meses</h2>
+            <div class="stat-container">
+                <div class="stat-box">
+                    <div class="stat-number">70%</div>
+                    <div class="stat-label">Docentes con incertidumbre sobre objetivos y procedimientos del ABC</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">65%</div>
+                    <div class="stat-label">Se sienten inseguros al aplicar el método</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">60%</div>
+                    <div class="stat-label">Asisten a actividades opcionales</div>
+                </div>
+            </div>
+            <p style="margin-top: 30px; font-size: 1.2em; text-align: center; color: #667eea; font-weight: bold;">
+                Estos números revelan una brecha significativa entre la decisión pedagógica y la implementación real
+            </p>
+        </div>
+
+        <!-- Slide 4: Desafíos Principales -->
+        <div class="slide">
+            <h2>🎯 Cuatro Desafíos con una Sola Raíz</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="icon">💬</div>
+                    <h4>Comunicación Inadecuada</h4>
+                    <p>Los docentes no interpretan uniformemente los objetivos ni las instrucciones. Cada uno implementa su propia versión del ABC.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">🚧</div>
+                    <h4>Resistencia al Cambio</h4>
+                    <p>No es terquedad, es inseguridad. El ABC exige pasar de transmitir contenido a facilitar discusión, un rol que requiere habilidades distintas.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">🔄</div>
+                    <h4>Falta de Coordinación</h4>
+                    <p>La responsabilidad se diluye. Sin un marco metodológico unificado se producen errores frecuentes y trabajo aislado.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">📚</div>
+                    <h4>Capacitación Desalineada</h4>
+                    <p>Las capacitaciones son "muy teóricas". Se enseña ABC mediante exposición teórica, contradiciendo el propio método del caso.</p>
+                </div>
+            </div>
+            <div class="highlight-box" style="margin-top: 30px;">
+                <h3>💡 La Raíz del Problema</h3>
+                <p>InnovEduca decidió <strong>qué</strong> método usar, pero no diseñó <strong>cómo</strong> lo adoptarían las personas que deben ejecutarlo.</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Impacto en el Aprendizaje -->
+        <div class="slide">
+            <h2>🎓 Impacto en el Proceso de Enseñanza-Aprendizaje</h2>
+            <p style="margin-bottom: 30px;">
+                El impacto llega al estudiante en cadena: la ambigüedad docente se traduce en consignas poco claras, experiencias fragmentadas y baja participación.
+            </p>
+            <h3 style="text-align: center; margin-bottom: 30px;">Afecta las tres presencias del aprendizaje en línea:</h3>
+            <ul>
+                <li>
+                    <strong>👨‍🏫 Presencia Docente:</strong> Sin diseño ni facilitación coherentes, los estudiantes no perciben dirección clara
+                </li>
+                <li>
+                    <strong>🧠 Presencia Cognitiva:</strong> Un caso sin consigna precisa no produce el ciclo de exploración, integración y resolución; se queda en opinión
+                </li>
+                <li>
+                    <strong>🤝 Presencia Social:</strong> Los docentes aislados no modelan colaboración, y los foros pierden calidad en las interacciones
+                </li>
+            </ul>
+        </div>
+
+        <!-- Slide 6: Estrategias de Mejora -->
+        <div class="slide">
+            <h2>🚀 Estrategias para Mejorar la Comunicación y Coordinación</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>📋 Redefinir Lineamientos</h4>
+                    <ul style="font-size: 0.95em; margin-top: 10px;">
+                        <li>Guía maestra ABC de 2 páginas</li>
+                        <li>Plantilla única de caso</li>
+                        <li>Rúbrica común de participación</li>
+                        <li>Micro-videos de 3 minutos</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>👥 Establecer Roles</h4>
+                    <ul style="font-size: 0.95em; margin-top: 10px;">
+                        <li>Coordinadora del programa</li>
+                        <li>Líder metodológico ABC</li>
+                        <li>Docente-facilitador</li>
+                        <li>Mentor par</li>
+                        <li>Soporte técnico</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📡 Comunicación Clara</h4>
+                    <ul style="font-size: 0.95em; margin-top: 10px;">
+                        <li>Canal único por función</li>
+                        <li>Ritmo fijo: boletín semanal</li>
+                        <li>Reuniones quincenales</li>
+                        <li>Repositorio central</li>
+                        <li>Semáforo de claridad</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🎯 Capacitación Práctica</h4>
+                    <ul style="font-size: 0.95em; margin-top: 10px;">
+                        <li>Docentes viven el ABC como estudiantes</li>
+                        <li>Microtalleres por área disciplinar</li>
+                        <li>Comunidad de práctica</li>
+                        <li>Mentoría entre pares</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Programa ABC-Viva -->
+        <div class="slide">
+            <h2>✨ Propuesta Innovadora: Programa ABC-Viva</h2>
+            <p style="text-align: center; margin-bottom: 30px; font-size: 1.2em;">
+                Cuatro componentes para que el cambio se aprenda haciendo, no leyendo
+            </p>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="icon">🪞</div>
+                    <h4>1. Casos Espejo</h4>
+                    <p>Cada docente redacta un caso breve a partir de un problema real de su propia asignatura, usando la plantilla común.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">🔬</div>
+                    <h4>2. Laboratorio de Facilitación</h4>
+                    <p>Sesiones cortas donde los docentes practican la conducción de discusiones en línea con colegas que actúan como estudiantes.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">🎖️</div>
+                    <h4>3. Pasaporte de Facilitador</h4>
+                    <p>Ruta de tres niveles (explorador, practicante, mentor) con insignias digitales ligadas a evidencias concretas.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">🚀</div>
+                    <h4>4. Piloto y Escalamiento</h4>
+                    <p>Inicio con grupo voluntario (8-10 docentes), medición de resultados y escalamiento gradual.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Ruta de Implementación -->
+        <div class="slide">
+            <h2>📅 Ruta de Implementación a 90 Días</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Días 1-15: Diagnóstico y Estructura</h4>
+                    <p>Diagnóstico ampliado con línea base, definición de roles y publicación de la matriz de responsabilidades.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Días 16-45: Herramientas y Comunicación</h4>
+                    <p>Guía maestra, plantilla única, rúbrica común, micro-videos y arranque de canales de comunicación.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Días 46-75: Capacitación Práctica</h4>
+                    <p>Capacitación con casos, laboratorio de facilitación, primeras mentorías e inicio del piloto.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Días 76-90: Evaluación y Ajustes</h4>
+                    <p>Medición con semáforo de claridad, encuesta de seguimiento, ajustes y decisión sobre escalamiento.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Competencias de Liderazgo -->
+        <div class="slide">
+            <h2>👑 Competencias de Liderazgo para Ana Torres</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>🎯 Visión Compartida</h4>
+                    <p>Explicar en una frase por qué el ABC y qué cambia concretamente para cada docente.</p>
+                </div>
+                <div class="card">
+                    <h4>❤️ Empatía y Escucha</h4>
+                    <p>Crear espacios seguros para decir "no sé hacerlo" sin costo profesional. Escuchar como datos, no como quejas.</p>
+                </div>
+                <div class="card">
+                    <h4>✅ Coherencia</h4>
+                    <p>Aplicar el método que pide: si pide ABC, sus reuniones y capacitaciones deben funcionar con casos.</p>
+                </div>
+                <div class="card">
+                    <h4>🤝 Liderazgo Distribuido</h4>
+                    <p>Delegar autoridad real y confiar en el liderazgo de docentes con experiencia.</p>
+                </div>
+                <div class="card">
+                    <h4>📊 Pensamiento Sistémico</h4>
+                    <p>Distinguir síntomas de causas y manejar indicadores de seguimiento basados en datos.</p>
+                </div>
+                <div class="card">
+                    <h4>💻 Competencia Digital</h4>
+                    <p>Dominar las dimensiones tecnológica, pedagógica y disciplinar (modelo TPACK).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Conclusiones -->
+        <div class="slide">
+            <h2>🎯 Conclusiones Clave</h2>
+            <ul>
+                <li>
+                    <strong>El problema no es el ABC, es la implementación.</strong> La institución eligió una buena metodología y la introdujo sin claridad, sin roles y con una capacitación que contradice el método.
+                </li>
+                <li>
+                    <strong>La resistencia docente es inseguridad y falta de claridad.</strong> Tratarla con presión empeora el problema; tratarla con práctica guiada, mentoría y objetivos claros lo resuelve.
+                </li>
+                <li>
+                    <strong>En un entorno 100% en línea, la comunicación debe diseñarse.</strong> Canales definidos, ritmo estable, repositorio único y verificación constante de comprensión.
+                </li>
+                <li>
+                    <strong>El programa ABC-Viva propone aprender practicando.</strong> Con casos propios, facilitación entrenada, reconocimiento visible y escalamiento gradual desde un piloto.
+                </li>
+                <li>
+                    <strong>El éxito depende del liderazgo.</strong> Visión clara, empatía, coherencia, datos y liderazgo distribuido en lugar de concentrado.
+                </li>
+            </ul>
+            <div class="highlight-box pulse" style="margin-top: 30px;">
+                <h3>💡 Mensaje Final</h3>
+                <p>La transformación pedagógica exitosa requiere más que una buena idea: requiere un proceso de cambio institucional bien diseñado, con claridad, práctica y liderazgo efectivo.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="previousSlide()">← Anterior</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Siguiente →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progressFill = document.getElementById('progressFill');
+        const slideCounter = document.getElementById('slideCounter');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else if (index < currentSlide) {
+                    slide.classList.add('prev');
+                }
+            });
+
+            // Update progress bar
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            progressFill.style.width = progress + '%';
+
+            // Update slide counter
+            slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+
+            // Update button states
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+
+        // Touch support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                nextSlide();
+            }
+            if (touchEndX > touchStartX + 50) {
+                previousSlide();
+            }
+        }
+
+        // Initialize
+        updateSlide();
+    </script>
+</body>
+</html>
